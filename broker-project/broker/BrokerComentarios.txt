@@ -4,3 +4,8 @@ Comentário 1
     Vamos adicionar um endereço de servidor loopback, usado para 
     simular uma rede virtual dentro da própria máquina.
 
+Comentário 2
+
+    Este arquivo Python (broker.py) parece ser um servidor intermediário para gerenciar comunicações 
+    entre publicadores e assinantes (publishers e subscribers) usando o paradigma de Publish-Subscribe.
+    
