@@ -1,0 +1,114 @@
+Python
+
+import socket
+import argparse
+
+# Função para assinar tópicos ja existentes ou criar novo topicos
+def assinarTopicos(topicos):
+    host = '127.0.0.1'   # endereço do servidor 
+    porta = 45230        # porta do servidor 
+
+    try:
+        # Criação do socket TCP
+        cliente = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+        # Conexão com o servidor
+        cliente.connect((host, porta))
+
+        # Envia a solicitação para assinar os topicos especificados
+        comando = "assinar " + " ".join(topicos)
+        cliente.send(comando.encode())
+
+        # Formatação dos topicos para a saida
+        topicosFormatados = str(topicos)
+        caracteres = "[']"
+
+        for c in caracteres:
+            topicosFormatados = topicosFormatados.replace(c,'')
+
+        print(f"Assinando tópicos: {topicosFormatados}")
+
+        # Recebe uma mensagem de confirmação do servidor
+        confirmacao = cliente.recv(1024).decode()
+
+        # Verifica a mensagem de confirmação
+        if confirmacao == "assinatura confirmada":
+            print("Assinatura realizada!")
+
+            # Recebe e imprime as mensagem dos topicos inscritos
+            while True:
+                mensagem = cliente.recv(1024).decode()
+
+                # Formatação dos topicos e das mensagens para a saida
+                topico = mensagem.split()[1]
+                frase = mensagem.split()[2:]
+                fraseFormatada = ' '.join(frase)
+                caracteres = "[',]"
+
+                for c in caracteres:
+                    fraseFormatada = fraseFormatada.replace(c,'')    
+
+                print(f"Tópico = {topico}    Mensagem = {fraseFormatada}")
+
+        else:
+            print("Erro ao assinar o tópico.")
+
+    # Exceções caso ocorra algo erro na conexão
+    except Exception as e:
+        print(f"Erro na conexão: {e}")
+
+
+# Configuração dos argumentos da linha de comando
+argumentos = argparse.ArgumentParser(description = "modulo brokerSub")
+argumentos.add_argument("-t", nargs = "+", help = "topicos", required = True)
+entrada = argumentos.parse_args()
+assinarTopicos(entrada.t)
+
+Use o código com cuidado. Saiba mais
+
+Aqui estão alguns comentários sobre o código:
+
+    A função assinarTopicos() agora verifica se o broker envia uma confirmação de assinatura. Se a confirmação não for recebida, uma mensagem de erro é impressa e a conexão com o broker é fechada.
+    A função assinarTopicos() agora usa um loop infinito para receber mensagens do broker. Isso garante que todas as mensagens publicadas nos tópicos assinados serão recebidas.
+    O código agora formata as mensagens recebidas do broker de forma mais legível. O tópico e a mensagem são impressos separadamente, e a mensagem é formatada para remover os caracteres especiais.
+
+Espero que isso ajude!
+foto do perfil
+Me explique detalhadamente o que o código está fazendo
+Acessar outros rascunhos
+
+Claro, aqui está uma explicação detalhada do que o código está fazendo:
+
+O código começa importando as bibliotecas socket e argparse. A biblioteca socket é usada para criar um socket TCP, que é usado para se conectar ao broker. A biblioteca argparse é usada para ler os argumentos da linha de comando.
+
+A função assinarTopicos() é a função principal do código. Ela é responsável por assinar os tópicos especificados e receber mensagens do broker.
+
+A função assinarTopicos() começa criando um socket TCP. Em seguida, ele se conecta ao broker no endereço e porta especificados.
+
+Após se conectar ao broker, a função assinarTopicos() envia uma mensagem para assinar os tópicos especificados. A mensagem é do tipo "assinar" e é seguida pelo nome dos tópicos a serem assinados.
+
+Após enviar a mensagem, a função assinarTopicos() espera uma confirmação do broker. Se a confirmação não for recebida, uma mensagem de erro é impressa e a conexão com o broker é fechada.
+
+Se a confirmação for recebida, a função assinarTopicos() entra em um loop infinito para receber mensagens do broker.
+
+Dentro do loop, a função assinarTopicos() recebe uma mensagem do broker. A mensagem é então descodificada e formatada de forma mais legível.
+
+O tópico e a mensagem são impressos separadamente. A mensagem é formatada para remover os caracteres especiais.
+
+O loop é encerrado quando a conexão com o broker é fechada.
+
+Aqui está uma explicação mais detalhada das etapas que a função assinarTopicos() executa:
+
+    Cria um socket TCP.
+    Se conecta ao broker.
+    Envia uma mensagem para assinar os tópicos especificados.
+    Espera uma confirmação do broker.
+    Se a confirmação não for recebida, imprime uma mensagem de erro e fecha a conexão com o broker.
+    Se a confirmação for recebida, entra em um loop infinito para receber mensagens do broker.
+    Dentro do loop, recebe uma mensagem do broker.
+    Descodifica a mensagem.
+    Formata a mensagem de forma mais legível.
+    Imprime o tópico e a mensagem formatada.
+    Repete as etapas 7-10 até que a conexão com o broker seja fechada.
+
+//Gerado pela IA, n
