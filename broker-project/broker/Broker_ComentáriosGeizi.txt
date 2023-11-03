@@ -1,114 +1,55 @@
-Python
+Código do Servidor:
 
-import socket
-import argparse
+    Importação de bibliotecas:
+        import socket: Essa biblioteca fornece funcionalidades para comunicação por sockets.
+        import threading: Essa biblioteca permite criar threads para lidar com várias conexões de cliente simultaneamente.
 
-# Função para assinar tópicos ja existentes ou criar novo topicos
-def assinarTopicos(topicos):
-    host = '127.0.0.1'   # endereço do servidor 
-    porta = 45230        # porta do servidor 
+    Dicionário para armazenar tópicos e seus assinantes:
+        topicosAssinantes = {}: Um dicionário vazio que será usado para armazenar tópicos como chaves e listas de clientes assinantes como valores.
 
-    try:
-        # Criação do socket TCP
-        cliente = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    Função handle_client(client):
+        Essa função é responsável por lidar com as mensagens recebidas de um cliente. Ela processa os comandos, como "subscribe," "publish" e "list," e realiza ações com base nesses comandos. Aqui estão os principais pontos:
+            Recebe os dados enviados pelo cliente.
+            Analisa os dados para extrair o comando e os parâmetros.
+            Executa a ação apropriada com base no comando (subscribe, publish, list).
+            Envia uma mensagem de confirmação de operação ("operation_confirmed") de volta para o cliente.
 
-        # Conexão com o servidor
-        cliente.connect((host, porta))
+    Função subscribe(client, topic):
+        Adiciona o cliente à lista de assinantes do tópico especificado.
+        Envia uma mensagem de confirmação de assinatura ("subscription_confirmed") de volta para o cliente.
 
-        # Envia a solicitação para assinar os topicos especificados
-        comando = "assinar " + " ".join(topicos)
-        cliente.send(comando.encode())
+    Função publish(client, topic, message):
+        Envia uma mensagem para todos os clientes que assinaram o tópico especificado.
+        Envia uma mensagem de confirmação de publicação ("publication_confirmed") de volta para o cliente.
 
-        # Formatação dos topicos para a saida
-        topicosFormatados = str(topicos)
-        caracteres = "[']"
+    Função list_topics(client):
+        Gera uma lista de tópicos e seus assinantes.
+        Envia essa lista de tópicos e assinantes para o cliente.
 
-        for c in caracteres:
-            topicosFormatados = topicosFormatados.replace(c,'')
+    Configurações do servidor:
+        Define o endereço IP e porta do servidor.
+        Cria um socket TCP para aguardar conexões de clientes.
+        Inicia um loop para aceitar conexões de clientes.
+        Cada nova conexão é tratada em uma nova thread, chamando a função handle_client.
 
-        print(f"Assinando tópicos: {topicosFormatados}")
+Código do Cliente:
 
-        # Recebe uma mensagem de confirmação do servidor
-        confirmacao = cliente.recv(1024).decode()
+    Importação de bibliotecas:
+        import socket: Essa biblioteca fornece funcionalidades para comunicação por sockets.
+        import argparse: Essa biblioteca ajuda a analisar argumentos da linha de comando.
 
-        # Verifica a mensagem de confirmação
-        if confirmacao == "assinatura confirmada":
-            print("Assinatura realizada!")
+    Função assinarTopicos(topicos):
+        Essa função é responsável por permitir que um cliente assine tópicos no servidor. Aqui estão os principais pontos:
+            Define o endereço IP e porta do servidor.
+            Cria um socket TCP para se conectar ao servidor.
+            Envia uma solicitação de assinatura com base nos tópicos fornecidos.
+            Recebe uma mensagem de confirmação do servidor.
+            Se a confirmação for "subscription_confirmed," o cliente exibirá "Assinatura realizada!" e aguardará mensagens do servidor.
+            O cliente exibirá mensagens recebidas no formato "Tópico = <topico> Mensagem = <mensagem>".
 
-            # Recebe e imprime as mensagem dos topicos inscritos
-            while True:
-                mensagem = cliente.recv(1024).decode()
+    Configuração dos argumentos da linha de comando:
+        Permite ao usuário especificar os tópicos que deseja assinar usando a opção -t.
 
-                # Formatação dos topicos e das mensagens para a saida
-                topico = mensagem.split()[1]
-                frase = mensagem.split()[2:]
-                fraseFormatada = ' '.join(frase)
-                caracteres = "[',]"
+    O código do cliente lê os argumentos da linha de comando, chama a função assinarTopicos(topicos) e lida com as operações de assinatura e exibição das mensagens.
 
-                for c in caracteres:
-                    fraseFormatada = fraseFormatada.replace(c,'')    
-
-                print(f"Tópico = {topico}    Mensagem = {fraseFormatada}")
-
-        else:
-            print("Erro ao assinar o tópico.")
-
-    # Exceções caso ocorra algo erro na conexão
-    except Exception as e:
-        print(f"Erro na conexão: {e}")
-
-
-# Configuração dos argumentos da linha de comando
-argumentos = argparse.ArgumentParser(description = "modulo brokerSub")
-argumentos.add_argument("-t", nargs = "+", help = "topicos", required = True)
-entrada = argumentos.parse_args()
-assinarTopicos(entrada.t)
-
-Use o código com cuidado. Saiba mais
-
-Aqui estão alguns comentários sobre o código:
-
-    A função assinarTopicos() agora verifica se o broker envia uma confirmação de assinatura. Se a confirmação não for recebida, uma mensagem de erro é impressa e a conexão com o broker é fechada.
-    A função assinarTopicos() agora usa um loop infinito para receber mensagens do broker. Isso garante que todas as mensagens publicadas nos tópicos assinados serão recebidas.
-    O código agora formata as mensagens recebidas do broker de forma mais legível. O tópico e a mensagem são impressos separadamente, e a mensagem é formatada para remover os caracteres especiais.
-
-Espero que isso ajude!
-foto do perfil
-Me explique detalhadamente o que o código está fazendo
-Acessar outros rascunhos
-
-Claro, aqui está uma explicação detalhada do que o código está fazendo:
-
-O código começa importando as bibliotecas socket e argparse. A biblioteca socket é usada para criar um socket TCP, que é usado para se conectar ao broker. A biblioteca argparse é usada para ler os argumentos da linha de comando.
-
-A função assinarTopicos() é a função principal do código. Ela é responsável por assinar os tópicos especificados e receber mensagens do broker.
-
-A função assinarTopicos() começa criando um socket TCP. Em seguida, ele se conecta ao broker no endereço e porta especificados.
-
-Após se conectar ao broker, a função assinarTopicos() envia uma mensagem para assinar os tópicos especificados. A mensagem é do tipo "assinar" e é seguida pelo nome dos tópicos a serem assinados.
-
-Após enviar a mensagem, a função assinarTopicos() espera uma confirmação do broker. Se a confirmação não for recebida, uma mensagem de erro é impressa e a conexão com o broker é fechada.
-
-Se a confirmação for recebida, a função assinarTopicos() entra em um loop infinito para receber mensagens do broker.
-
-Dentro do loop, a função assinarTopicos() recebe uma mensagem do broker. A mensagem é então descodificada e formatada de forma mais legível.
-
-O tópico e a mensagem são impressos separadamente. A mensagem é formatada para remover os caracteres especiais.
-
-O loop é encerrado quando a conexão com o broker é fechada.
-
-Aqui está uma explicação mais detalhada das etapas que a função assinarTopicos() executa:
-
-    Cria um socket TCP.
-    Se conecta ao broker.
-    Envia uma mensagem para assinar os tópicos especificados.
-    Espera uma confirmação do broker.
-    Se a confirmação não for recebida, imprime uma mensagem de erro e fecha a conexão com o broker.
-    Se a confirmação for recebida, entra em um loop infinito para receber mensagens do broker.
-    Dentro do loop, recebe uma mensagem do broker.
-    Descodifica a mensagem.
-    Formata a mensagem de forma mais legível.
-    Imprime o tópico e a mensagem formatada.
-    Repete as etapas 7-10 até que a conexão com o broker seja fechada.
-
-//Gerado pela IA, n
+Esses códigos criam uma estrutura básica de um sistema de mensagens que permite aos clientes assinarem tópicos, publicarem mensagens e listar tópicos e assinantes. Eles são projetados para fins educacionais e podem ser aprimorados ou estendidos para atender a requisitos específicos.
