@@ -8,4 +8,5 @@ Comentário 2
 
     Este arquivo Python (broker.py) parece ser um servidor intermediário para gerenciar comunicações 
     entre publicadores e assinantes (publishers e subscribers) usando o paradigma de Publish-Subscribe.
+
     
