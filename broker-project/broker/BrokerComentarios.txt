@@ -1,0 +1,2 @@
+Vamos adicionar um endereço de servidor loopback, usado para 
+simular uma rede virtual dentro da própria máquina.
