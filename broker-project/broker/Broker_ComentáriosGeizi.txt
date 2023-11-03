@@ -1,0 +1,55 @@
+Código do Servidor:
+
+    Importação de bibliotecas:
+        import socket: Essa biblioteca fornece funcionalidades para comunicação por sockets.
+        import threading: Essa biblioteca permite criar threads para lidar com várias conexões de cliente simultaneamente.
+
+    Dicionário para armazenar tópicos e seus assinantes:
+        topicosAssinantes = {}: Um dicionário vazio que será usado para armazenar tópicos como chaves e listas de clientes assinantes como valores.
+
+    Função handle_client(client):
+        Essa função é responsável por lidar com as mensagens recebidas de um cliente. Ela processa os comandos, como "subscribe," "publish" e "list," e realiza ações com base nesses comandos. Aqui estão os principais pontos:
+            Recebe os dados enviados pelo cliente.
+            Analisa os dados para extrair o comando e os parâmetros.
+            Executa a ação apropriada com base no comando (subscribe, publish, list).
+            Envia uma mensagem de confirmação de operação ("operation_confirmed") de volta para o cliente.
+
+    Função subscribe(client, topic):
+        Adiciona o cliente à lista de assinantes do tópico especificado.
+        Envia uma mensagem de confirmação de assinatura ("subscription_confirmed") de volta para o cliente.
+
+    Função publish(client, topic, message):
+        Envia uma mensagem para todos os clientes que assinaram o tópico especificado.
+        Envia uma mensagem de confirmação de publicação ("publication_confirmed") de volta para o cliente.
+
+    Função list_topics(client):
+        Gera uma lista de tópicos e seus assinantes.
+        Envia essa lista de tópicos e assinantes para o cliente.
+
+    Configurações do servidor:
+        Define o endereço IP e porta do servidor.
+        Cria um socket TCP para aguardar conexões de clientes.
+        Inicia um loop para aceitar conexões de clientes.
+        Cada nova conexão é tratada em uma nova thread, chamando a função handle_client.
+
+Código do Cliente:
+
+    Importação de bibliotecas:
+        import socket: Essa biblioteca fornece funcionalidades para comunicação por sockets.
+        import argparse: Essa biblioteca ajuda a analisar argumentos da linha de comando.
+
+    Função assinarTopicos(topicos):
+        Essa função é responsável por permitir que um cliente assine tópicos no servidor. Aqui estão os principais pontos:
+            Define o endereço IP e porta do servidor.
+            Cria um socket TCP para se conectar ao servidor.
+            Envia uma solicitação de assinatura com base nos tópicos fornecidos.
+            Recebe uma mensagem de confirmação do servidor.
+            Se a confirmação for "subscription_confirmed," o cliente exibirá "Assinatura realizada!" e aguardará mensagens do servidor.
+            O cliente exibirá mensagens recebidas no formato "Tópico = <topico> Mensagem = <mensagem>".
+
+    Configuração dos argumentos da linha de comando:
+        Permite ao usuário especificar os tópicos que deseja assinar usando a opção -t.
+
+    O código do cliente lê os argumentos da linha de comando, chama a função assinarTopicos(topicos) e lida com as operações de assinatura e exibição das mensagens.
+
+Esses códigos criam uma estrutura básica de um sistema de mensagens que permite aos clientes assinarem tópicos, publicarem mensagens e listar tópicos e assinantes. Eles são projetados para fins educacionais e podem ser aprimorados ou estendidos para atender a requisitos específicos.
