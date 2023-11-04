@@ -1,4 +1,4 @@
-import socket
+from socket import *
 import threading
 
 # Dicionário para armazenar os tópicos e seus assinantes
@@ -56,7 +56,7 @@ host = "127.0.0.1"
 port = 8080
 
 # Cria um socket TCP
-server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server_socket = socket(AF_INET, SOCK_STREAM)
 server_socket.bind((host, port))
 server_socket.listen()
 

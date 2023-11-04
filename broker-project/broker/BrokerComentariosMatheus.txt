@@ -9,4 +9,15 @@ Comentário 2
     Este arquivo Python (broker.py) parece ser um servidor intermediário para gerenciar comunicações 
     entre publicadores e assinantes (publishers e subscribers) usando o paradigma de Publish-Subscribe.
 
-    
+Estrutura do projeto
+
+3 funções para serem usadas pelos clientes.
+
+ Essa função é responsável por lidar com as mensagens recebidas de um cliente. Ela processa os comandos, como "subscribe," "publish" e "list," e realiza ações com base nesses comandos. Aqui estão os principais pontos:
+
+    handle_client()        
+            
+            Recebe os dados enviados pelo cliente.
+            Analisa os dados para extrair o comando e os parâmetros.
+            Executa a ação apropriada com base no comando (subscribe, publish, list).
+            Envia uma mensagem de confirmação de operação ("operation_confirmed") de volta para o cliente.
