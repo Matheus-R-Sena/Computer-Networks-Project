@@ -11,15 +11,15 @@ def conectar_ao_servidor(host, porta):
         print(f"Erro na conexão: {e}")
         return None
 
-# Função para enviar um comando e receber uma resposta
-def enviar_comando_e_receber_resposta(cliente, comando):
+# Função para enviar o comando "LIST" e receber uma resposta
+def enviar_comando_list(cliente):
     if cliente:
         try:
-            cliente.send(comando.encode())
+            cliente.send("list".encode())
             resposta = cliente.recv(1024).decode()
             return resposta
         except Exception as e:
-            print(f"Erro no envio do comando: {e}")
+            print(f"Erro no envio do comando 'list': {e}")
     return ""
 
 def main():
@@ -31,12 +31,12 @@ def main():
     args = parser.parse_args()
     comando = args.c
 
-    cliente = conectar_ao_servidor(host, porta)
-    if not cliente:
-        return
-
     if comando == "LIST":
-        resposta = enviar_comando_e_receber_resposta(cliente, "list")
+        cliente = conectar_ao_servidor(host, porta)
+        if not cliente:
+            return
+
+        resposta = enviar_comando_list(cliente)
 
         if "COMANDO_CONFIRMATION_ACK" in resposta:
             print("Comando LIST confirmado pelo Broker.")
@@ -45,18 +45,10 @@ def main():
             print(dados_tabela)
         else:
             print(f"Erro no comando LIST: {resposta}")
-    elif comando == "OUTRO_COMANDO":
-        resposta = enviar_comando_e_receber_resposta(cliente, "OUTRO_COMANDO")
 
-        if "OUTRO_COMANDO_ACK" in resposta:
-            print(f"Comando {comando} confirmado pelo Broker.")
-            # Lógica adicional para lidar com a resposta do comando
-        else:
-            print(f"Erro no comando {comando}: {resposta}")
+        cliente.close()
     else:
         print(f"Comando '{comando}' não suportado.")
-
-    cliente.close()
 
 if __name__ == "__main__":
     main()
