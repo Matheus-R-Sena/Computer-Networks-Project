@@ -16,7 +16,7 @@ topicosAssinantes = {}
 # Função para receber e processar mensagens de clientes
 def handle_client(client):
     while True:
-        data = client.recv(2048)
+        data = client.recv(2038)
         if not data:
             break
 
@@ -70,7 +70,7 @@ porta = "padrao definida pelo SO"
 server_socket = socket(AF_INET, SOCK_STREAM)
 
 #Configurando porta 
-server_socket.bind((host), 0)
+server_socket.bind((host, 0))
 server_socket.listen()
 
 mensagem = "Servidor ouvindo: IP {} e porta {}"
