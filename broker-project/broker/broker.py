@@ -76,8 +76,29 @@ server_socket.listen()
 mensagem = "Servidor ouvindo: IP {} e porta {}"
 print(mensagem.format(host, porta))
 
-# Loop para aceitar conexões
+# Laço para que os clientes possam se conectar ao broker
 while True:
+
+    #Client = objeto socket para passar dados na comunicação cliente servidor
+    #address = tupla contendo a informação Endereço IP e numero de porta de cliente
     client, address = server_socket.accept()
-    threading.Thread(target=handle_client, args=(client,)).start()
+
+    mensagem = client.recv(2048).decode()
+    #O objeto socket client irá receber uma sequência de até 2048 bytes que será decodificada pelo método
+
+        # cria uma thread para os assinantes
+    if mensagem.startswith("assinar"):
+        threadAssinante = threading.Thread(target = subscribe, args = (client, address, mensagem))
+        threadAssinante.start()
+
+    # cria uma thread para publicar as mensagens
+    elif mensagem.startswith("publicar"):
+        threadPublicacao = threading.Thread(target = publish, args = (client, address, mensagem))
+        threadPublicacao.start()
+
+    # chama a função para listar os topicos e seus assinantes
+    elif mensagem.startswith("list"):
+        lista = list_topics(client)
+
+    #threading.Thread(target=handle_client, args=(client,)).start()
 
