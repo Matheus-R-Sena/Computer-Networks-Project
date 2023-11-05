@@ -1,3 +1,12 @@
+#Programa broker
+
+"""
+Comentários simplificados para auxiliar no desenvolvimento. Para mais informações
+sobre os componentes do código confira o relatório do projeto.
+
+"""
+##
+
 from socket import *
 import threading
 
@@ -51,16 +60,21 @@ def list_topics(client):
 
     client.sendall(str(topics_and_subscribers).encode())
 
-# Configurações do servidor
-host = "127.0.0.1"
-port = 8080
+#Corpo do código do broker
 
-# Cria um socket TCP
+# Definição do endereço IP e Porta para o programa broker
+host = "0.0.0.0"
+porta = "padrao definida pelo SO"
+
+# Criação do objeto socket TCP mais explicado no relatório
 server_socket = socket(AF_INET, SOCK_STREAM)
-server_socket.bind((host, port))
+
+#Configurando porta 
+server_socket.bind((host), 0)
 server_socket.listen()
 
-print(f"Servidor ouvindo em: {host}:{port}")
+mensagem = "Servidor ouvindo: IP {} e porta {}"
+print(mensagem.format(host, porta))
 
 # Loop para aceitar conexões
 while True:
