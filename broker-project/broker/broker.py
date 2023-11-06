@@ -15,7 +15,7 @@ topicosAssinantes = {}
 
 # Função para receber e processar mensagens de clientes
 def handle_client(client):
-    
+
     while True:
         data = client.recv(2038)
         if not data:
@@ -88,14 +88,15 @@ while True:
     #O objeto socket client irá receber uma sequência de até 2048 bytes que será decodificada pelo método
 
         # cria uma thread para os assinantes
-    if mensagem.startswith("assinar"):
-        threadAssinante = threading.Thread(target = subscribe, args = (client, address, mensagem))
-        threadAssinante.start()
 
     # cria uma thread para publicar as mensagens
-    elif mensagem.startswith("publicar"):
-        threadPublicacao = threading.Thread(target = publish, args = (client, address, mensagem))
-        threadPublicacao.start()
+    if mensagem.startswith("publicar"):
+        threadPub = threading.Thread(target = publish, args = (client, address, mensagem))
+        threadPub.start()
+    
+    elif mensagem.startswith("assinar"):
+        threadSub = threading.Thread(target = subscribe, args = (client, address, mensagem))
+        threadSub.start()
 
     # chama a função para listar os topicos e seus assinantes
     elif mensagem.startswith("list"):
