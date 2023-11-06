@@ -3,8 +3,8 @@ import argparse
 
 # Função para assinar tópicos já existentes ou criar novos tópicos
 def assinarTopicos(topicos):
-    host = '127.0.0.1'   # Endereço do servidor
-    porta = 8080        # Porta do servidor
+    host = '0.0.0.0'   # Endereço do servidor
+    porta = 8000          # Porta do servidor
 
     try:
         # Criação do socket TCP

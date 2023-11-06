@@ -65,13 +65,13 @@ def list_topics(client):
 
 # Definição do endereço IP e Porta para o programa broker
 host = "0.0.0.0"
-porta = "padrao definida pelo SO"
+porta = 8000
 
 # Criação do objeto socket TCP mais explicado no relatório
 server_socket = socket(AF_INET, SOCK_STREAM)
 
 #Configurando porta 
-server_socket.bind((host, 0))
+server_socket.bind((host, porta))
 server_socket.listen()
 
 mensagem = "Servidor ouvindo: IP {} e porta {}"

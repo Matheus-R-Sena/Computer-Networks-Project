@@ -2,8 +2,8 @@ import socket
 
 def publicarMensagens(topico, mensagem):
     # Configurações de conexão
-    host = '127.0.0.1'  # Endereço do servidor
-    porta = 45230      # Porta do servidor
+    host = '0.0.0.0'  # Endereço do servidor
+    porta = 0      # Porta do servidor
 
     try:
         # Criação do socket TCP
