@@ -15,6 +15,7 @@ topicosAssinantes = {}
 
 # Função para receber e processar mensagens de clientes
 def handle_client(client):
+    
     while True:
         data = client.recv(2038)
         if not data:
