@@ -4,7 +4,7 @@ import argparse
 # Função para assinar tópicos já existentes ou criar novos tópicos
 def assinarTopicos(topicos):
     host = '0.0.0.0'   # Endereço do servidor
-    porta = 8000          # Porta do servidor
+    porta = 8000        # Porta do servidor
 
     try:
         # Criação do socket TCP
@@ -27,7 +27,7 @@ def assinarTopicos(topicos):
         print(f"Assinando tópicos: {topicosFormatados}")
 
         # Recebe uma mensagem de confirmação do servidor
-        confirmacao = cliente.recv(1024).decode()
+        confirmacao = cliente.recv(2048).decode()
 
         print(f"Confirmação do servidor: {confirmacao}")
 
@@ -37,7 +37,7 @@ def assinarTopicos(topicos):
 
             # Recebe e imprime as mensagens dos tópicos inscritos
             while True:
-                mensagem = cliente.recv(1024).decode()
+                mensagem = cliente.recv(2048).decode()
 
                 # Formatação dos tópicos e das mensagens para a saída
                 topico = mensagem.split()[0]

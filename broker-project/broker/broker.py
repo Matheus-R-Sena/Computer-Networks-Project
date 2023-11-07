@@ -14,6 +14,24 @@ import threading
 topicosAssinantes = {}
 
 # Função para receber e processar mensagens de clientes
+
+#Função Subscribe
+#target = subscribe, args = (client, address, mensagem))
+
+def subscribe (client, address, comando):
+        topicos = comando.split()[1:]
+
+        for topico in topicos:
+            if topico not in topicosAssinantes:
+                topicosAssinantes[topico] = []
+            topicosAssinantes[topico].append(client)
+            
+        client.send("Assinatura confirmada".encode())
+        mensagem = "Mensagem de confirmação enviada para {}/{}"
+        print(mensagem.format(address[0], address[1]))
+
+    
+"""" 
 def handle_client(client):
 
     while True:
@@ -36,8 +54,10 @@ def handle_client(client):
             list_topics(client)
 
         client.sendall("operation_confirmed".encode())
-
+"""
 # Função para assinar um tópico
+
+"""
 def subscribe(client, topic):
     if topic not in topicosAssinantes:
         topicosAssinantes[topic] = []
@@ -45,7 +65,7 @@ def subscribe(client, topic):
     topicosAssinantes[topic].append(client)
 
     client.sendall("subscription_confirmed".encode())
-
+"""
 # Função para publicar uma mensagem
 def publish(client, topic, message):
     if topic in topicosAssinantes:
@@ -61,10 +81,12 @@ def list_topics(client):
 
     client.sendall(str(topics_and_subscribers).encode())
 
+
+
 #Corpo do código do broker
 
 # Definição do endereço IP e Porta para o programa broker
-host = "0.0.0.0"
+host = '0.0.0.0'
 porta = 8000
 
 # Criação do objeto socket TCP mais explicado no relatório

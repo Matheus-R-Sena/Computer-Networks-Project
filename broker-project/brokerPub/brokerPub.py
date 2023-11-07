@@ -3,7 +3,7 @@ import socket
 def publicarMensagens(topico, mensagem):
     # Configurações de conexão
     host = '0.0.0.0'  # Endereço do servidor
-    porta = 0      # Porta do servidor
+    porta = 8080      # Porta do servidor
 
     try:
         # Criação do socket TCP
