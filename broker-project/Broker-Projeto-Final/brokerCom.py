@@ -5,7 +5,6 @@ import argparse     # biblioteca para configurar os argumentos da linha de coman
 def comandos(comando):
 
 
-    try:
         # criando objeto socket para o cliente se conectar com o servidor
         cliente = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         cliente.connect(('127.0.0.1', 8889))
@@ -38,9 +37,6 @@ def comandos(comando):
         else:
             print("Erro ao imprimir a lista, por favor utilize o comando: -c LIST")
 
-    # exceções caso ocorra algo erro na conexão
-    except Exception as e:
-        print(f"Erro na conexão: {e}")
 
     # encerra a conexão com o servidor
     finally:
