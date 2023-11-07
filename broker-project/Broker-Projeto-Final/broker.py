@@ -95,11 +95,7 @@ def clientePublica(cliente, mensagem): #Passamos o objeto socket cliente e a men
 
 def listarTopicosAssinantes(cliente):
     # envia uma mensagem de confirmação para o cliente
-    cliente.send("confirmado".encode()) 
-    
-
-    lista = {}
-    
+    cliente.send("confirmado".encode())    
     
     dado = ""
 
@@ -119,14 +115,14 @@ def listarTopicosAssinantes(cliente):
         # A string resultante é adicionada à variável dado com o nome do tópico.
         dado += f"{topico}: {Assinantes_str}\n"
 
-    cliente.send(str(lista).encode()) # envia para o cliente a nova lista
+    cliente.send(dado.encode())
 
 
 #Programa Principal
 
 # Servidor Setup
 servidor = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-servidor.bind(("127.0.0.1", 8888))
+servidor.bind(("127.0.0.1", 8889))
 servidor.listen()
 print("Servidor escutando na porta 8888")
 

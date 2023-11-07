@@ -8,7 +8,7 @@ def comandos(comando):
     try:
         # criando objeto socket para o cliente se conectar com o servidor
         cliente = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        cliente.connect(('127.0.0.1', 8888))
+        cliente.connect(('127.0.0.1', 8889))
 
         # verificação do comando 
         if comando == "LIST":
@@ -18,27 +18,18 @@ def comandos(comando):
 
             # recebe uma mensagem de confirmação do servidor
             confirmacao = cliente.recv(1024).decode()
-
+        
             # verifica a mensagem de confirmação
+            print(f"Confirmação: {confirmacao}")
             if confirmacao == "confirmado":
 
-                # O código recebe uma lista de tópicos e assinantes do servidor, 
-                lista = cliente.recv(4096).decode()
-                # Essa lista é decodificada e convertida para um formato de dicionário usando eval()
-                lista1 = eval(lista)
+                print("Comando aceito! Confira abaixo a lista de tópicos e seus assinantes:") 
 
-                # verifica se a lista esta vazia
-                if not lista1:
-                    print("lista vazia!")
+                # O código recebe uma lista de tópicos e assinantes do servidor, 
+                lista = cliente.recv(1024).decode()
                 
-                # imprime a lista de tópicos e seus respectivos assinantes
-                else:
-                    print("Comando aceito! Confira abaixo a lista de tópicos e seus assinantes:")
-                    for topico, assinantes in lista1.items():
-                        print(f'Tópico: {topico}')
-                        for assinante in assinantes:
-                            print(f'  Assinante: {assinante}')
-                        print("")
+                print(lista)  # imprime a lista mantida e enviada pelo broker
+                
                 
             else:
                 print("Comando não aceito pelo servidor")
