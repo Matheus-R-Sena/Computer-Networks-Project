@@ -11,15 +11,15 @@ def conectar_ao_servidor(host, porta):
         print(f"Erro na conexão: {e}")
         return None
 
-# Função para enviar o comando "LIST" e receber uma resposta
-def enviar_comando_list(cliente):
+# Função para enviar o comando especificado e receber uma resposta
+def enviar_comando(cliente, comando):
     if cliente:
         try:
-            cliente.send("list".encode())
+            cliente.send(comando.encode())
             resposta = cliente.recv(1024).decode()
             return resposta
         except Exception as e:
-            print(f"Erro no envio do comando 'list': {e}")
+            print(f"Erro no envio do comando '{comando}': {e}")
     return ""
 
 def main():
@@ -31,24 +31,22 @@ def main():
     args = parser.parse_args()
     comando = args.c
 
-    if comando == "LIST":
-        cliente = conectar_ao_servidor(host, porta)
-        if not cliente:
-            return
+    cliente = conectar_ao_servidor(host, porta)
+    if not cliente:
+        return
 
-        resposta = enviar_comando_list(cliente)
+    resposta = enviar_comando(cliente, comando)
 
-        if "COMANDO_CONFIRMATION_ACK" in resposta:
-            print("Comando LIST confirmado pelo Broker.")
+    if "COMANDO_CONFIRMATION_ACK" in resposta:
+        print(f"Comando {comando} confirmado pelo Broker.")
+        if comando == "LIST":
             dados_tabela = cliente.recv(1024).decode()
             print("Tabela de Tópicos e Assinantes:")
             print(dados_tabela)
-        else:
-            print(f"Erro no comando LIST: {resposta}")
-
-        cliente.close()
     else:
-        print(f"Comando '{comando}' não suportado.")
+        print(f"Erro no comando {comando}: {resposta}")
+
+    cliente.close()
 
 if __name__ == "__main__":
     main()
