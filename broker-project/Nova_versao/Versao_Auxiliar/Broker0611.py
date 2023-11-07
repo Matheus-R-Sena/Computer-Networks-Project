@@ -34,24 +34,24 @@ def assinar(client, topico):
 
     topicos_assinantes[topico].append(client)
 
-    client.sendall("assinatura confirmada".encode())  # Envia uma mensagem de confirmação ao cliente
+    client.send("assinatura confirmada".encode())  # Envia uma mensagem de confirmação ao cliente
 
 # Função para publicar uma mensagem
 def publicar(client, topico, mensagem):
     if topico in topicos_assinantes:
         for assinante in topicos_assinantes[topico]:
-            assinante.sendall(f"{topico} {mensagem}".encode())
+            assinante.send(f"{topico} {mensagem}".encode())
 
-        client.sendall("publicação confirmada".encode())  # Envia uma mensagem de confirmação ao cliente
+        client.send("publicacao confirmada".encode())  # Envia uma mensagem de confirmação ao cliente
     else:
-        client.sendall("publicação não confirmada".encode())  # Envia uma mensagem de confirmação ao cliente
+        client.send("publicacao não confirmada".encode())  # Envia uma mensagem de confirmação ao cliente
 
 # Função para listar os tópicos e seus assinantes
 def listar_topicos(client):
     topicos_e_assinantes = {topico: [assinante.getpeername() for assinante in assinantes]
                            for topico, assinantes in topicos_assinantes.items()}
     resposta = str(topicos_e_assinantes)
-    client.sendall(f"COMANDO_CONFIRMATION_ACK\n{resposta}\n".encode())
+    client.send(f"COMANDO_CONFIRMATION_ACK\n{resposta}\n".encode())
 
 # Configurações do servidor
 host = "127.0.0.1"  # Endereço IP em que o servidor escuta
