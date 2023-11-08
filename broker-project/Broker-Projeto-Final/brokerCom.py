@@ -7,7 +7,7 @@ def comandos(comando):
 
         # criando objeto socket para o cliente se conectar com o servidor
         cliente = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        cliente.connect(('127.0.0.1', 8889))
+        cliente.connect(('127.0.0.1', 9000))
 
         # verificação do comando 
         if comando == "LIST":
