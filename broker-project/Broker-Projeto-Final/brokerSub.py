@@ -5,7 +5,7 @@ def assinar(topicos):
 
     # cria um objeto socket para o Sub
     cliente = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    cliente.connect(('127.0.0.1', 8889)) # conexão do cliente com o servidor
+    cliente.connect(('127.0.0.1', 9000)) # conexão do cliente com o servidor
     #Utilizamos o comando connect do objeto cliente para fazer a conexão com o servidor a partir de seus endereços de IP e porta
 
     comando = f"assinar "  + " ".join(topicos)

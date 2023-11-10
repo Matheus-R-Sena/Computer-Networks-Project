@@ -122,9 +122,9 @@ def listarTopicosAssinantes(cliente):
 
 # Servidor Setup
 servidor = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-servidor.bind(("127.0.0.1", 8889))
+servidor.bind(("127.0.0.1", 9000))
 servidor.listen()
-print("Servidor escutando na porta 8888")
+print("Servidor escutando na porta 9000")
 
 # Comunicação do Servidor
 comunicacao(servidor)

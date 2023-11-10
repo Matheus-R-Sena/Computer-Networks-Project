@@ -15,7 +15,7 @@ try:
     #Conexão com o servidor
     cliente = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     #Função usada para conectar ao servidor
-    cliente.connect(('127.0.0.1', 8889))
+    cliente.connect(('127.0.0.1', 9000))
 
     # Enviando mensagem 
     comando = f"publicar {topico} {mensagem}"
