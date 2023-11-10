@@ -11,7 +11,7 @@ entrada = argumentos.parse_args()
 topico = entrada.t
 mensagem = entrada.m
 
-try:
+
     #Conexão com o servidor
     cliente = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     #Função usada para conectar ao servidor
@@ -32,9 +32,6 @@ try:
     else:
         print("falha ao publicar mensagem no tópico")
 
-# exceções caso ocorra algo erro na conexão
-except Exception as e:
-    print(f"Erro na conexão: {e}")
 
 # encerra a conexão com o servidor
 finally:
