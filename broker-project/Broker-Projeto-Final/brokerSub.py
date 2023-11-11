@@ -17,6 +17,7 @@ def assinar(topicos):
 
     if confirmacao == "assinatura confirmada":
         print("Assinatura realizada com sucesso")
+        
         while True:
             
             dado = cliente.recv(1024).decode()   
