@@ -25,7 +25,7 @@ def comunicacao(servidor):
 
             # cria uma thread para publicar as mensagens
             elif mensagem.startswith("publicar"):
-                threadPublicacao = threading.Thread(target = clientePublica, args = (cliente, mensagem))
+                threadPublicacao = threading.Thread(target = clientePublica, args = (cliente,))
                 threadPublicacao.start()
         
 
@@ -67,27 +67,36 @@ def clienteAssina (cliente, endereco, mensagem): # função para adicionar um cl
 
 
 
-def clientePublica(cliente, mensagem): #Passamos o objeto socket cliente e a mensagem vinda dele.
+def clientePublica(cliente): #Passamos o objeto socket cliente e a mensagem vinda dele.
    
-    
-    topico, conteudo = mensagem.split()[1], " ".join(mensagem.split()[2:]) 
+    print("Conexão realizada com sucesso")
+    while True:
 
-    if topico in topicos_e_Assinantes: 
+        msg = cliente.recv(1024).decode()
+        print(msg)
 
-        cliente.send("publicacao confirmada".encode())
-        for subscriber_socket in topicos_e_Assinantes[topico]: # percorre a lista de assinantes do topico
-            
-            print(f"MENSAGEM: {conteudo} TOPICO: {topico}")
-            dado = topico +" "+ conteudo 
 
-            subscriber_socket.sendall(dado.encode()) # envia a mensagem aos assinantes
-            print(f"Mensagem enviada aos assinantes do topico:  {topico}") # imprime uma mensagem de confirmação de envio
+
+
+
+        """
+        if topico in topicos_e_Assinantes: 
+
+            cliente.send("publicacao confirmada".encode())
+            for subscriber_socket in topicos_e_Assinantes[topico]: # percorre a lista de assinantes do topico
                 
-    else: # caso o topico não exista, envia uma mensagem que a publicaçao nao foi feita
-        cliente.send("Publicacao nao confirmada".encode())
-        print(f"Mensagem não enviada aos assinantes")  
+                print(f"MENSAGEM: {conteudo} TOPICO: {topico}")
+                dado = topico +" "+ conteudo 
 
-
+                subscriber_socket.sendall(dado.encode()) # envia a mensagem aos assinantes
+                print(f"Mensagem enviada aos assinantes do topico:  {topico}") # imprime uma mensagem de confirmação de envio
+                    
+        else: # caso o topico não exista, envia uma mensagem que a publicaçao nao foi feita
+            cliente.send("Publicacao nao confirmada".encode())
+            print(f"Mensagem não enviada aos assinantes")  
+        """
+    
+   
 
 def listarTopicosAssinantes(cliente):
     # envia uma mensagem de confirmação para o cliente
