@@ -2,10 +2,7 @@ import socket
 import argparse
 
 def imprime_Mensagem_Topico(mensagem):
-    """
-    Método que imprime cada item da lista de strings. Por uma questão operacional vamos manter a mensagem como uma lista de strings, 
-    sempre que quisermos imprimir de forma formatada usaremos o método imprime_Mensagem_Topico()
-    """
+   
     print("\n")
     for palavra in mensagem:
         print(palavra, end=' ')
@@ -55,12 +52,3 @@ argumentos.add_argument("-m", nargs = '+', help = "mensagem", required = True)
 entrada = argumentos.parse_args()
 
 Publica(entrada.t, entrada.m, cliente)
-"""
-Entrada.t é uma string que representa o tópico e t é um atributo que aponta para a palavra referente ao tópico passado por linha de comando.
-
-entrada.m referencia a mensagem que como irá receber muitos valores segundo especificado em nargs = '+', com isso os argumentos passados em linha
-de comando irão compor uma lista de strings no formato:
-
-[string 1, string 2 , string 3 , string 4 , string 5 , string 6 , string 7 , string 8 , string 9 , string 20 ,..... string n]
-
-"""
