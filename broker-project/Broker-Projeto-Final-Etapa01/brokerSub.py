@@ -42,7 +42,7 @@ def assinar(topicos, cliente):
             
             dado = cliente.recv(1024).decode()   
             if(dado != "assinatura confirmada"):
-                #topico, mensagem = dado[0], " ".join(dado[1:])
+                topico, mensagem = dado[0], " ".join(dado[1:])
                      
                 print(f"Mensagem: {mensagem} Topico: {topico}")
             else:

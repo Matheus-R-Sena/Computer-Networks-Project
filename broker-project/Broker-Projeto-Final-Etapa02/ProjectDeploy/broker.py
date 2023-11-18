@@ -3,6 +3,14 @@ import threading
 
 # Dicionário que armazena tópicos como chaves e seus respectivos assinantes
 topicos_e_Assinantes = {} 
+"""
+Temos aqui um dicionário no modelo chave valor, que para uma chave temos n valores. Para a aplicação:
+uma chave será o tópico e seus valores serão as refências dos objetos sockets clientes dos programas que assinaram aquele tópico
+no seguinte formato:
+
+DIC = {Clima: [cliente1, cliente2, cliente3], Temperatura: [cliente4, cliente5, cliente6]}
+
+"""
 
 
 #Função para a conexão
@@ -25,7 +33,7 @@ def comunicacao(servidor):
 
             # cria uma thread para publicar as mensagens
             elif mensagem.startswith("publicar"):
-                threadPublicacao = threading.Thread(target = clientePublica, args = (cliente,))
+                threadPublicacao = threading.Thread(target = clientePublica, args = (cliente, endereco, mensagem))
                 threadPublicacao.start()
         
 
@@ -67,9 +75,20 @@ def clienteAssina (cliente, endereco, mensagem): # função para adicionar um cl
 
 
 
-def clientePublica(cliente): #Passamos o objeto socket cliente e a mensagem vinda dele.
+def clientePublica(cliente, endereco, mensagem): #Passamos o objeto socket cliente e a mensagem vinda dele.
    
-    print("Conexão realizada com sucesso")
+    #Informa que tudo está Ok tanto no broker quanto no cliente
+    print(f"\nConexão realizada com sucesso com o cliente no endereço (\"IP\", PORTA) {endereco}.", end="")
+    topico = mensagem.split()[1]
+    print(f" Tipo cliente: Simulador {topico}\n")
+
+    #Adiciona a lista de Tópicos
+
+    if topico not in topicos_e_Assinantes:
+        topicos_e_Assinantes[topico] = []
+        """estamos adicionando aqui um novo tópico"""
+
+    #Envia mensagem para seus assinantes.
     while True:
 
         msg = cliente.recv(1024).decode()

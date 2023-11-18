@@ -1,17 +1,12 @@
-#Clima simulador 
-"""
-Este publisher irá simular uma atualização do Clima, enviando novos dados a respeito das condições climáticas entre chuvoso, ensolarado
-e nublado.
-"""
-
-import random
 import socket
-import sys
 import time
+import random
+import sys
+
+
 
 
 def Publica (numero, cliente):
-
     while True:
         numero_aleatorio = random.randint(1,3)
 
@@ -52,7 +47,6 @@ def Publica (numero, cliente):
         # encerra a conexão com o servidor
 
         time.sleep(numero)
-        
 
 #Estabelecimento da conexão
 
@@ -60,12 +54,21 @@ cliente = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 #Função usada para conectar ao servidor
 cliente.connect(('127.0.0.1', 9000))
 
-comando = "publicar Clima"
+comando = "publicar"
 
 cliente.send(comando.encode())
 
-print("Conexão realizada com sucesso com o servidor")
+print("Conexão realizada com sucesso")
 
 numero = int(sys.argv[1])
+"""Da biblioteca sys, numero receberá 1 argumento por linha de comando ao executar o arquivo, este 
+    será o número inteiro que irá determinar o intervalo de tempo em segundos que o pub irá enviar seus
+    dados
+"""
 
 Publica(numero, cliente)
+"""
+    Passamos a referência de socket cliente e o número que determina o intervalo
+
+"""
+
