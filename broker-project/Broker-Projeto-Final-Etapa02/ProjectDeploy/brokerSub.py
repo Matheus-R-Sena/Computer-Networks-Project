@@ -3,10 +3,10 @@
 import socket
 import argparse
 
-def assinar(topicos, cliente):
+def assinar(cliente):
 
     #Adiciona "assinar" na lista de tópicos como flag para o broker
-    comando = "assinar "+" ".join(topicos)
+    comando = "assinar"
     
     #Enviando comando e tópicos para o broker
     cliente.send(comando.encode())
@@ -52,15 +52,6 @@ except Exception as e:
     
 # Comandos no Terminal
 
-#Criação de uma interface para comandos no terminal
-parser = argparse.ArgumentParser(description="Broker Subscriber")
-
-#Configurando como os comandos devem ser escritos
-parser.add_argument("-t", nargs='+', required=True, help="Lista de topicos")
-
-#Levando a Lista de argumentos  para um novo objeto recém criado args, referenciado por "argumentos"
-argumentos = parser.parse_args()
-
 #Chamada do método assinar
-assinar(argumentos.t, cliente)
+assinar(cliente)
 

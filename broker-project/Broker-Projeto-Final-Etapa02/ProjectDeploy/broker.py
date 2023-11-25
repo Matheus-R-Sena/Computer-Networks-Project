@@ -26,7 +26,7 @@ def comunicacao(servidor):
             # cria uma thread para os assinantes
             if mensagem.startswith("assinar"):
             
-                threadAssinante = threading.Thread(target = clienteAssina, args = (cliente, endereco, mensagem))
+                threadAssinante = threading.Thread(target = clienteAssina, args = (cliente, endereco))
                 
                 threadAssinante.start()
                 
@@ -48,18 +48,13 @@ def comunicacao(servidor):
 
 
 
-def clienteAssina (cliente, endereco, mensagem): # função para adicionar um cliente à lista de assinantes de um tópico
+def clienteAssina (cliente, endereco): # função para adicionar um cliente à lista de assinantes de um tópico
     try:
-
-        
-        topicos = mensagem.split()[1:]
+        #Conexão estabelecida com cliente
+        cliente.send("Conexão estabelecida com sucesso".encode())
     
-        #Cliente
-        for topico in topicos:
-            if topico not in topicos_e_Assinantes:
-                topicos_e_Assinantes[topico] = []
-            topicos_e_Assinantes[topico].append(cliente)
-
+        #Enivar tópicos como opção para os assinantes
+        #////////////////////////////////////////////
 
         # envia uma mensagem de confirmação para o cliente
         cliente.send("assinatura confirmada".encode()) 
@@ -76,7 +71,7 @@ def clienteAssina (cliente, endereco, mensagem): # função para adicionar um cl
 
 
 def clientePublica(cliente, endereco, mensagem): #Passamos o objeto socket cliente e a mensagem vinda dele.
-   
+    
     #Informa que tudo está Ok tanto no broker quanto no cliente
     print(f"\nConexão realizada com sucesso com o cliente no endereço (\"IP\", PORTA) {endereco}.", end="")
     topico = mensagem.split()[1]
@@ -89,14 +84,23 @@ def clientePublica(cliente, endereco, mensagem): #Passamos o objeto socket clien
         """estamos adicionando aqui um novo tópico"""
 
     #Envia mensagem para seus assinantes.
+    
     while True:
 
+        #Mensagem do Sensor sendo recebida
         msg = cliente.recv(1024).decode()
         print(msg)
 
+        if (len(topicos_e_Assinantes[topico]) > 0):
+            for Cliente_Socket in topicos_e_Assinantes[topico]:
+                Cliente_Socket.sendall(msg.encode())
+        else:
+            print("Não temos assinantes")
+
+        #Mandar para os assinantes
 
 
-
+    
 
         """
         if topico in topicos_e_Assinantes: 
