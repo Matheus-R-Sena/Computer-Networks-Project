@@ -1,0 +1,2 @@
+Cliente Sub terá um loop infinito no primeiro if para poder
+sempre receber e enviar dados.

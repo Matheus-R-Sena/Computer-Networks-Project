@@ -6,33 +6,39 @@ import argparse
 def assinar(cliente):
 
     #Adiciona "assinar" na lista de tópicos como flag para o broker
-    comando = "assinar"
+    FLAG = "assinar"
     
     #Enviando comando e tópicos para o broker
-    cliente.send(comando.encode())
+    cliente.send(FLAG.encode())
+
+    print("\nVocê não está assinando nenhum tópico\n")
+
+    print("\nGostaria de se inscrever em um tópico?\n")
+    
+    print("\nSe sim, para mostrar os tópicos oferecidos pelo broker digite: topicos")
+    print("\nSe não, para finalizar o programa digite sair:\n")
+    print("\nObs: O cliente só poderá se inscrever em um tópico.\n")
+
+    comando = input("Comando: ")
+
+    if comando == "topicos":
+        cliente.send("requisita".encode())
+
+        
+
+
+    elif comando == "sair":
+        print("outra coisa")
+
+    else:
+        print("comando inválido, programa finalizado.")
+
+    #conexão finalizada
+    cliente.close()
+
    
     
-    #Recebe a mensagem de confirmação da assinatura nos tópicos
-    confirmacao = cliente.recv(1024).decode() 
-   
-
-    if confirmacao == "assinatura confirmada":
-        print("Assinatura realizada com sucesso nos tópicos:")
-        for i in topicos:
-            print(f"Topico assinado: {i}")
-        
-        
-        while True:
-            
-            dado = cliente.recv(1024).decode()   
-            if(dado != "assinatura confirmada"):
-                topico, mensagem = dado[0], " ".join(dado[1:])
-                     
-                print(f"Mensagem: {mensagem} Topico: {topico}")
-            else:
-                print(dado)
-    else:
-        print("Falha na assinatura")
+    
 
 
 

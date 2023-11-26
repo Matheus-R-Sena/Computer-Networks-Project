@@ -1,5 +1,10 @@
 import socket
 import threading
+import re
+"""
+Biblioteca utilizada pela função ClientePublica, para diferenciar os dados que estão chegando. Talvez de
+vamos fazer isso no Subscriber.
+"""
 
 # Dicionário que armazena tópicos como chaves e seus respectivos assinantes
 topicos_e_Assinantes = {} 
@@ -17,9 +22,9 @@ DIC = {Clima: [cliente1, cliente2, cliente3], Temperatura: [cliente4, cliente5, 
 def comunicacao(servidor):
     try:
         while True:
-
+            
             cliente, endereco = servidor.accept()  # aceita a conexão com o cliente
-    
+
             
             mensagem = cliente.recv(1024).decode()  # recebe o comando do cliente
 
@@ -49,21 +54,19 @@ def comunicacao(servidor):
 
 
 def clienteAssina (cliente, endereco): # função para adicionar um cliente à lista de assinantes de um tópico
-    try:
-        #Conexão estabelecida com cliente
-        cliente.send("Conexão estabelecida com sucesso".encode())
     
-        #Enivar tópicos como opção para os assinantes
-        #////////////////////////////////////////////
+    #Informa que tudo está Ok tanto no broker quanto no cliente
+    print(f"\nConexão realizada com sucesso com o cliente no endereço (\"IP\", PORTA) {endereco}.", end="")
+    
+    #Recebendo requisição para assinar os tópicos
+    comando = cliente.recv(1024).decode()
+    if comando == "requisita":
+        print("manda os tópicos")
+    else:
+        print("O cliente cancelou a conexão")
+        cliente.close()
 
-        # envia uma mensagem de confirmação para o cliente
-        cliente.send("assinatura confirmada".encode()) 
 
-        print(f"Mensagem de confirmação enviada para cliente que requisitou o servico")
-
-    # exceções caso ocorra algo erro na conexão
-    except Exception as e:
-        print(f"Erro na conexão com {endereco}: {e}")
 
 
 
@@ -91,33 +94,17 @@ def clientePublica(cliente, endereco, mensagem): #Passamos o objeto socket clien
         msg = cliente.recv(1024).decode()
         print(msg)
 
+        #Veremos se é uma String ou um número
         if (len(topicos_e_Assinantes[topico]) > 0):
             for Cliente_Socket in topicos_e_Assinantes[topico]:
                 Cliente_Socket.sendall(msg.encode())
         else:
-            print("Não temos assinantes")
+            print("Não temos assinantes no momento...")
 
         #Mandar para os assinantes
 
 
     
-
-        """
-        if topico in topicos_e_Assinantes: 
-
-            cliente.send("publicacao confirmada".encode())
-            for subscriber_socket in topicos_e_Assinantes[topico]: # percorre a lista de assinantes do topico
-                
-                print(f"MENSAGEM: {conteudo} TOPICO: {topico}")
-                dado = topico +" "+ conteudo 
-
-                subscriber_socket.sendall(dado.encode()) # envia a mensagem aos assinantes
-                print(f"Mensagem enviada aos assinantes do topico:  {topico}") # imprime uma mensagem de confirmação de envio
-                    
-        else: # caso o topico não exista, envia uma mensagem que a publicaçao nao foi feita
-            cliente.send("Publicacao nao confirmada".encode())
-            print(f"Mensagem não enviada aos assinantes")  
-        """
     
    
 
