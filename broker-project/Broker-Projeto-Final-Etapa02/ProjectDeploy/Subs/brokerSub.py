@@ -3,38 +3,19 @@
 import socket
 import argparse
 
-def assinar(cliente):
+def assinar(cliente, topico):
 
-    #Adiciona "assinar" na lista de tópicos como flag para o broker
-    FLAG = "assinar"
     
     #Enviando comando e tópicos para o broker
-    cliente.send(FLAG.encode())
+    comando = "assinar " + "".join(topico)
+    cliente.send(comando.encode())
 
-    print("\nVocê não está assinando nenhum tópico\n")
+   
 
-    print("\nGostaria de se inscrever em um tópico?\n")
-    
-    print("\nSe sim, para mostrar os tópicos oferecidos pelo broker digite: topicos")
-    print("\nSe não, para finalizar o programa digite sair:\n")
-    print("\nObs: O cliente só poderá se inscrever em um tópico.\n")
+    while True:
+        mensagem = cliente.recv(1024).decode()
+        print(mensagem)
 
-    comando = input("Comando: ")
-
-    if comando == "topicos":
-        cliente.send("requisita".encode())
-
-        
-
-
-    elif comando == "sair":
-        print("outra coisa")
-
-    else:
-        print("comando inválido, programa finalizado.")
-
-    #conexão finalizada
-    cliente.close()
 
    
     
@@ -58,6 +39,13 @@ except Exception as e:
     
 # Comandos no Terminal
 
+
+argumentos = argparse.ArgumentParser(description = "modulo brokerSub")
+argumentos.add_argument("-t", help = "topico", required = True)
+entrada = argumentos.parse_args()
+
+"""Estamos colocando o Sub para receber apenas um tópico
+"""
 #Chamada do método assinar
-assinar(cliente)
+assinar(cliente, entrada.t)
 

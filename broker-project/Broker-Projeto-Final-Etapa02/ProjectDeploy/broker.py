@@ -1,10 +1,7 @@
 import socket
 import threading
-import re
-"""
-Biblioteca utilizada pela função ClientePublica, para diferenciar os dados que estão chegando. Talvez de
-vamos fazer isso no Subscriber.
-"""
+
+
 
 # Dicionário que armazena tópicos como chaves e seus respectivos assinantes
 topicos_e_Assinantes = {} 
@@ -15,6 +12,7 @@ no seguinte formato:
 
 DIC = {Clima: [cliente1, cliente2, cliente3], Temperatura: [cliente4, cliente5, cliente6]}
 
+É o dicionário que é responsável por ligar assinante e publisher 
 """
 
 
@@ -31,7 +29,7 @@ def comunicacao(servidor):
             # cria uma thread para os assinantes
             if mensagem.startswith("assinar"):
             
-                threadAssinante = threading.Thread(target = clienteAssina, args = (cliente, endereco))
+                threadAssinante = threading.Thread(target = clienteAssina, args = (cliente, endereco, mensagem))
                 
                 threadAssinante.start()
                 
@@ -53,18 +51,18 @@ def comunicacao(servidor):
 
 
 
-def clienteAssina (cliente, endereco): # função para adicionar um cliente à lista de assinantes de um tópico
+def clienteAssina (cliente, endereco, mensagem): # função para adicionar um cliente à lista de assinantes de um tópico
     
     #Informa que tudo está Ok tanto no broker quanto no cliente
-    print(f"\nConexão realizada com sucesso com o cliente no endereço (\"IP\", PORTA) {endereco}.", end="")
-    
+    print(f"\nCliente (\"IP\", PORTA) {endereco}. assinou o tópico: ", end="")
+
     #Recebendo requisição para assinar os tópicos
-    comando = cliente.recv(1024).decode()
-    if comando == "requisita":
-        print("manda os tópicos")
-    else:
-        print("O cliente cancelou a conexão")
-        cliente.close()
+    topico = mensagem.split()[1]
+    print(topico)
+    
+    for chave in topicos_e_Assinantes:
+        if topico == chave:
+            topicos_e_Assinantes[topico].append(cliente)
 
 
 
@@ -92,12 +90,16 @@ def clientePublica(cliente, endereco, mensagem): #Passamos o objeto socket clien
 
         #Mensagem do Sensor sendo recebida
         msg = cliente.recv(1024).decode()
-        print(msg)
+        print("________________________________________________________________________________________________________")
 
-        #Veremos se é uma String ou um número
+        #Veremos se o topico possui assinantes
         if (len(topicos_e_Assinantes[topico]) > 0):
             for Cliente_Socket in topicos_e_Assinantes[topico]:
                 Cliente_Socket.sendall(msg.encode())
+
+                #Pegando endereço e porta
+                Cliente_end, Cliente_porta = Cliente_Socket.getpeername()
+                print(f"Enviando o dado {msg} do tópico {topico} para o cliente IP: {Cliente_end} PORTA: {Cliente_porta}")
         else:
             print("Não temos assinantes no momento...")
 

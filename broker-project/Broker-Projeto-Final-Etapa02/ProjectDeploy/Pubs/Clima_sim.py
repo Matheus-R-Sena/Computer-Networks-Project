@@ -36,20 +36,6 @@ def Publica (numero, cliente):
         #envia comando com o marcador
         cliente.send(comando.encode())
 
-        # recebe uma mensagem de confirmação do servidor
-        #confirmacao = cliente.recv(1024).decode()
-
-        # verifica a mensagem de confirmação 
-        #if confirmacao == "publicacao confirmada":
-
-        #    print("\n\npublicacao confirmada\n\n")
-        
-
-        #else:
-        #   print("falha ao publicar mensagem no tópico")
-
-
-        # encerra a conexão com o servidor
 
         time.sleep(numero)
         
