@@ -10,7 +10,6 @@ def assinar(cliente, topico):
     comando = "assinar " + "".join(topico)
     cliente.send(comando.encode())
 
-   
 
     while True:
         mensagem = cliente.recv(1024).decode()
