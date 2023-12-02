@@ -1,54 +1,81 @@
+#Dashboard apenas com a parte lógica pronta
+
 import socket             # biblioteca para estabelecer as conexões
 import threading          # biblioteca para criar as threads
 import time               # biblioteca para usar um tempo de espera
 import streamlit as st    # biblioteca para criar o dashboard web
 
 # lista com os topicos
-topicos = ["temperatura", "vento", "chuva"]
+topicos = ["Clima", "Temperatura", "Umidade"]
 
 # lista com os valores dos topicos
-variacoes = [0, 0, 0]
+variacoes = ["", 0, 0]
 
 # funcao para assinar os topicos
-def assinarTopico(topico, posicao):
-    host = "127.0.0.1"   # endereço do servidor 
-    porta = 12450        # porta do servidor
-
+def comunicacao(servidor):
     try:
+        contador = 0
+        while True:
+            
+            #Confirmação de que os 3 subs estão conectados
+            if contador == 3:
+                break
 
-        # criação do socket TCP
-        cliente = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            cliente, endereco = servidor.accept()  # aceita a conexão com o cliente 
+            mensagem = cliente.recv(1024).decode()  # recebe o comando do cliente
 
-        # conexão com o servidor
-        cliente.connect((host, porta))
+            # cria uma thread para os assinantes
+            if mensagem.startswith("Clima"):
+                contador = contador + 1
+                threadAssinante = threading.Thread(target = AtualizaClima, args = (cliente,))
+                threadAssinante.start()
+ 
+            # cria uma thread para publicar as mensagens
+            elif mensagem.startswith("Temperatura"):
+                contador = contador + 1
+                threadPublicacao = threading.Thread(target = AtualizaTemperatura, args = (cliente,))
+                threadPublicacao.start()
+        
 
-        # envia o comando para o broker
-        comando = "assinar " + " ".join(topico)
-        cliente.send(comando.encode())
+            # chama a função para listar os topicos e seus assinantes
+            elif mensagem.startswith("Umidade"):
+                contador = contador + 1
+                threadPublicacao = threading.Thread(target = AtualizaUmidade, args = (cliente,))
+                threadPublicacao.start()
 
-        # recebe uma mensagem de confirmação do servidor
-        confirmacao = cliente.recv(1024).decode()
-
-        # verifica a mensagem de confirmação 
-        if confirmacao == "assinatura confirmada":
-            print("Assinatura realizada!")
-
-            # loop para receber os dados
-            while True:
-                mensagem = cliente.recv(1024).decode()
-
-                # verifica se a mensagem nao esta vazia
-                if mensagem != '':
-
-                    # atualiza a lista com os novos valores
-                    variacoes[posicao] = float(mensagem) 
-
-        else:
-            print("Erro ao assinar o tópico.")
-
-    # exceções caso ocorra algum erro na conexão
     except Exception as e:
-        print(f"Erro na conexão: {e}")
+        print(f"Erro na conexão servidor: {e}") # exceção caso a conexão não seja feita
+
+
+def AtualizaClima (cliente):
+
+    while True:
+        #for topico in topicos:
+            #if topico == "Clima":
+            mensagem = cliente.recv(1024).decode()
+            print(mensagem)
+            variacoes[0] = mensagem
+
+
+
+def AtualizaTemperatura (cliente):
+
+    while True:
+    #for topico in topicos:
+        #if topico == "Temperatura":
+        mensagem = cliente.recv(1024).decode()
+        print(mensagem)
+        variacoes[1] = mensagem
+
+def AtualizaUmidade (cliente):
+    
+    while True:
+
+    #for topico in topicos:
+        #if topico == "Umidade":
+        mensagem = cliente.recv(1024).decode()
+        print(mensagem)
+        variacoes[2] = mensagem
 
 # funcoes para mudar as frases dos topicos
 def frasesTemperatura (temperatura):
@@ -117,10 +144,9 @@ st.title("Dashboard Sensores") # titulo do dashboard
 st.write("\n") # espaço em branco
 
 # topico 1
-st.markdown('<p style="color: orange; font-size: 2em;"> Temperatura</p>', unsafe_allow_html=True)  # titulo do topico 1
-st.text("0                                                                               100")   # faixa de variacao do topico 1
-linha1 = st.progress(0)  # cria a linha 1
-numero1 = st.markdown('')  # valor atual do topico
+st.markdown('<p style="color: orange; font-size: 2em;"> Clima </p>', unsafe_allow_html=True)  # titulo do topico 1
+# Substitua a linha da barra de progresso por um texto
+st.text(f'Clima: {variacoes[0]}')  # valor atual do topico
 
 st.write("\n")  # espaço em branco
 
@@ -131,7 +157,7 @@ st.write("\n")  # espaço em branco
 st.write("\n") # espaço em branco
 
 # topico 2
-st.markdown('<p style="color: lightgreen; font-size: 2em;"> Vento </p>', unsafe_allow_html=True)  # titulo do topico 2
+st.markdown('<p style="color: lightgreen; font-size: 2em;"> Temperatura </p>', unsafe_allow_html=True)  # titulo do topico 2
 st.text("0                                                                               100")  # faixa de variacao do topico 2
 linha2 = st.progress(0)  # cria a linha 2
 numero2 = st.markdown('')  # valor atual do topico 
@@ -145,7 +171,7 @@ st.write("\n")  # espaço em branco
 st.write("\n") # espaço em branco
 
 # topico 3
-st.markdown('<p style="color: lightblue; font-size: 2em;"> Chuva</p>', unsafe_allow_html=True)  # titulo do topico 3
+st.markdown('<p style="color: lightblue; font-size: 2em;"> Umidade</p>', unsafe_allow_html=True)  # titulo do topico 3
 st.text("0                                                                               100")  # faixa de variacao do topico 3
 linha3 = st.progress(0)  # cria linha 3
 numero3 = st.markdown('')  # valor atual do topico
@@ -156,27 +182,33 @@ fraseChuva = st.markdown('')  # frase atual do topico
 
 
 # for para criar as threads de assinantes
-for topico in topicos:
-    threadAssinante = threading.Thread(target = assinarTopico, args = (topico, topicos.index(topico)))
-    threadAssinante.start()
+servidor = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+servidor.bind(("127.0.0.1", 10000))
+servidor.listen()
+print("Servidor escutando na porta 10000")
+
+comunicacao(servidor)
+
+#Checar
 
 
 # loop para atualizar o dashboard
 while True:
 
     # atualiza as linhas de cada topico
-    linha1.progress(variacoes[0] / 100.0)   
-    linha2.progress(variacoes[1] / 100.0)
-    linha3.progress(variacoes[2] / 100.0)
+    v1 = float(variacoes[1])
+    v2 = float(variacoes[2])
+    linha2.progress(v1 / 100.0)
+    linha3.progress(v2 / 100.0)
 
     # atualiza os valores de cada topico
-    numero1.markdown(f'<p style="color: orange; font-size: 1.8em; text-align: center;"> {str(variacoes[0])} </p>', unsafe_allow_html=True)
+    
     numero2.markdown(f'<p style="color: lightgreen; font-size: 1.8em; text-align: center;"> {str(variacoes[1])} </p>', unsafe_allow_html=True)
     numero3.markdown(f'<p style="color: lightblue; font-size: 1.8em; text-align: center;"> {str(variacoes[2])} </p>', unsafe_allow_html=True)
 
     # atualiza as frases de cada topico
-    frasesTemperatura(variacoes[0])
     frasesVento(variacoes[1])
     frasesChuva(variacoes[2])
     
     time.sleep(1)
+   

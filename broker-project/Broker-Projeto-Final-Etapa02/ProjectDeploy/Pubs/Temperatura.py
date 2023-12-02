@@ -13,7 +13,7 @@ import time
 def Publica (numero, cliente):
 
     while True:
-        numero_aleatorio = random.randint(-40,60)
+        numero_aleatorio = random.randint(0,100)
 
 
         
