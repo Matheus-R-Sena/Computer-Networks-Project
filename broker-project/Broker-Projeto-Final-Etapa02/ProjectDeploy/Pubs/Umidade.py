@@ -1,4 +1,4 @@
-#Temperatura simulador 
+#Umidade simulador 
 """
 Este publisher irá simular uma atualização do Clima, enviando novos dados a respeito das condições climáticas entre chuvoso, ensolarado
 e nublado.
@@ -20,10 +20,10 @@ def Publica (numero, cliente):
         # Colocando o marcador publicar para o broker 
         comando = f"{numero_aleatorio}"
 
-        print(numero_aleatorio)
+        print(comando)
 
         #envia comando com o marcador
-        cliente.send(numero_aleatorio.encode())
+        cliente.send(comando.encode())
 
 
         time.sleep(numero)
@@ -35,7 +35,7 @@ cliente = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 #Função usada para conectar ao servidor
 cliente.connect(('127.0.0.1', 9000))
 
-comando = "publicar Clima"
+comando = "publicar Umidade"
 
 cliente.send(comando.encode())
 
