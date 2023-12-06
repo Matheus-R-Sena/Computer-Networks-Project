@@ -22,8 +22,7 @@ def comunicacao(servidor):
         while True:
             
             cliente, endereco = servidor.accept()  # aceita a conexão com o cliente
-
-            
+       
             mensagem = cliente.recv(1024).decode()  # recebe o comando do cliente
 
             # cria uma thread para os assinantes
@@ -38,11 +37,6 @@ def comunicacao(servidor):
             elif mensagem.startswith("publicar"):
                 threadPublicacao = threading.Thread(target = clientePublica, args = (cliente, endereco, mensagem))
                 threadPublicacao.start()
-        
-
-            # chama a função para listar os topicos e seus assinantes
-            elif mensagem.startswith("list"):
-                listarTopicosAssinantes(cliente)
 
     except Exception as e:
         print(f"Erro na conexão servidor: {e}") # exceção caso a conexão não seja feita
@@ -91,7 +85,7 @@ def clientePublica(cliente, endereco, mensagem): #Passamos o objeto socket clien
         #Mensagem do Sensor sendo recebida
         msg = cliente.recv(1024).decode()
         print("________________________________________________________________________________________________________")
-
+        "msg = chuvoso"
         #Veremos se o topico possui assinantes
         if (len(topicos_e_Assinantes[topico]) > 0):
             for Cliente_Socket in topicos_e_Assinantes[topico]:
@@ -105,24 +99,6 @@ def clientePublica(cliente, endereco, mensagem): #Passamos o objeto socket clien
 
         #Mandar para os assinantes
 
-
-    
-    
-   
-
-def listarTopicosAssinantes(cliente):
-    # envia uma mensagem de confirmação para o cliente
-    cliente.send("confirmado".encode())    
-    
-    dado = ""
-
-    for topico, assinantes in topicos_e_Assinantes.items():
-        Enderecos_Assinantes = [str(s.getpeername()) for s in assinantes]
-        Assinantes_str = ', '.join(Enderecos_Assinantes)
-        
-        dado += f"{topico}: {Assinantes_str}\n"
-
-    cliente.send(dado.encode())
 
 
 #Programa Principal

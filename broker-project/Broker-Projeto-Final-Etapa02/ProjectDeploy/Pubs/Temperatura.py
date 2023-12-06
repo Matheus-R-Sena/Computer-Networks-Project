@@ -13,14 +13,15 @@ import time
 def Publica (numero, cliente):
 
     while True:
-        numero_aleatorio = random.randint(0,100)
+        numero_aleatorio = random.randint(0,60)
 
 
         
         # Colocando o marcador publicar para o broker 
         comando = f"{numero_aleatorio}"
-
-        print(comando)
+        Cliente_end, Cliente_porta = cliente.getpeername()
+        print("________________________________________________________________________________________________________")
+        print(f'Enviando dado: {comando} para IP {Cliente_end} e porta {Cliente_porta}')
 
         #envia comando com o marcador
         cliente.send(comando.encode())

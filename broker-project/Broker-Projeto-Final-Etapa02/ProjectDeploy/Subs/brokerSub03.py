@@ -9,17 +9,23 @@ def assinar(cliente, topico, clienteDash):
     #Enviando comando e tópicos para o broker
     comando = "assinar " + "".join(topico)
     cliente.send(comando.encode())
+    #Pegando IP e porta do broker
+    Cliente_end, Cliente_porta = cliente.getpeername()
+    
 
 
     #Enviando comando Clima para o dashboard
     print("Cheguei até aqui")
     msg = "Umidade"
     clienteDash.send(msg.encode())
+    #Pegando IP e porta do Dashboard
+    ClienteDash_end, ClienteDash_porta = clienteDash.getpeername()
 
     while True:
         #Recebe do broker
         mensagem = cliente.recv(1024).decode()
-        print(mensagem)
+        print("________________________________________________________________________________________________________")
+        print(f'Recebendo dado: {mensagem} do Broker IP {Cliente_end} e porta {Cliente_porta} e enviando para Dashboard IP {ClienteDash_end} e porta {ClienteDash_porta}')
         #Manda para o Dash
         clienteDash.send(mensagem.encode())
 

@@ -31,9 +31,11 @@ def Publica (numero, cliente):
         # Colocando o marcador publicar para o broker 
         comando = f"{mensagem}"
 
-        print(mensagem)
+        Cliente_end, Cliente_porta = cliente.getpeername()
+        print("________________________________________________________________________________________________________")
+        print(f'Enviando dado: {comando} para IP {Cliente_end} e porta {Cliente_porta}')
 
-        #envia comando com o marcador
+        #envia dado para o 
         cliente.send(comando.encode())
 
 
@@ -46,6 +48,7 @@ cliente = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 #Função usada para conectar ao servidor
 cliente.connect(('127.0.0.1', 9000))
 
+#Envia o comando para acessar o método no broker e o tópico
 comando = "publicar Clima"
 
 cliente.send(comando.encode())
